@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;   
 use Illuminate\Support\Facades\Schema; 
+use Illuminate\Support\Facades\URL; // <-- Tambahan untuk HTTPS
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,14 +15,18 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-
     public function boot(): void
     {
 
         Schema::defaultStringLength(191);
 
-        // GLOBAL CART DATA (LOGIKA KERANJANG)
+        // --- TAMBAHAN JURUS PAKSA HTTPS UNTUK RAILWAY ---
+        if (env('APP_ENV') !== 'local') {
+            URL::forceScheme('https');
+        }
+        // ------------------------------------------------
 
+        // GLOBAL CART DATA (LOGIKA KERANJANG)
         View::composer('*', function ($view) {
             
             // Ambil data keranjang dari session
